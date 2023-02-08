@@ -1,0 +1,4 @@
+Name : name
+Place : place
+Pin : 999999
+Phone : 9999-9999999
