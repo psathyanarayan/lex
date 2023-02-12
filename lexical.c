@@ -1,69 +1,74 @@
 #include<stdio.h>
-#include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
-char keyword[30][30] = {"int","char","float","void","main","printf","return"};
-char ch,str[50];
-int i,l=0,t=0,flag,j;
+#include<stdlib.h>
 int main()
 {
-	flag = 0;
-	FILE *fin,*fout;
-	i=0;
-	fin = fopen("input.txt","r");
-	fout = fopen("output.txt","w");
-	fprintf(fout,"Line number\t\t\tToken number\t\t\tName\n");
-	while(!feof(fin))
-	{
-		ch = fgetc(fin);
-		if(ch == '+' || ch == '-' || ch == '*' || ch == '/')
-		{
-			t++;
-			fprintf(fout,"%11d\t\t\t%12d\t\t\tOperator\n",l,t);
-		}
-		else if(ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}')
-		{
-			t++;
-                        fprintf(fout,"%11d\t\t\t%12d\t\t\tSpecial Characters\n",l,t);
-		}
-		else if(isdigit(ch))
-		{
-			t++;
-                        fprintf(fout,"%11d\t\t\t%12d\t\t\tDigit\n",l,t);
-		}
-		else if(isalpha(ch))
-		{
-			str[i] = ch;
-			i++;
-			ch = fgetc(fin);
-			while (isalnum(ch) && ch != ' ')
-			{
-				str[i] = ch;
-				i++;
-				ch = fgetc(fin);
-			}
-			str[i] = '\0';
-			for(j=0;j<=30;j++)
-			{
-				if(strcmp(str,keyword[j])==0)
-				{
-					flag = 1;
-					break;
-				}
-			}
-			if(flag == 1)
-			{
-				t++;
-                        	fprintf(fout,"%11d\t\t\t%12d\t\t\tKeyword %s\n",l,t,str);
-			}
-			else
-			{
-				t++;
-                        	fprintf(fout,"%11d\t\t\t%12d\t\t\tIdentifier %s\n",l,t,str);
-			}
-		}
-		else if(ch == '\n')
-			l++;
-	}
-}
+    FILE *input,*output;
+    int i,j,l=0,t=0,flag;
+    char keyword[30][30] = {"int","char","float","double","if","else","for","do","while","return","void","main","printf"};
+    char ch,str[30];
+    input = fopen("input.txt","r");
+    output = fopen("output.txt","w");
+    fprintf(output,"Line Number\t\tToken Number\t\tName\n");
+    while(!feof(input))
+    {
+        i=0;
+        flag = 0;
+        ch = fgetc(input);
+        if(ch == '/' && fgetc(input) == '/')
+        {
+            while(fgetc(input) != '\n')
+            {}
+        }
+        if(ch == '+' || ch == '-' || ch == '*' || ch == '-' || ch == '/')
+        {
+            fprintf(output,"%d\t\t%d\t\tOperator %c\n",l,t,ch);
+            t++;
+        }
+        else if (ch == '{' || ch == '}' || ch == '(' || ch == ')' || ch == '@' || ch == '#' || ch == '&' || ch == '|' || ch == '!' || ch == '[' || ch == ']' )
+        {
+            fprintf(output,"%d\t\t%d\t\tSpecial Symbol %c\n",l,t,ch);
+            t++;
+        }
+        else if (isdigit(ch))
+        {
+            fprintf(output,"%d\t\t%d\t\tDigit %c\n",l,t,ch);
+            t++;
+        }
+        else if(isalpha(ch))
+        {
+            str[i] = ch;
+            i++;
+            ch = fgetc(input);
+            while(isalnum(ch) && ch != ' ')
+            {
+                str[i] = ch;
+                i++;
+                ch = fgetc(input);
+            }
+            str[i] = '\0';
+            for(j=0;j<=30;j++)
+            {
+                if(strcmp(keyword[j],str)==0)
+                {
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag == 1)
+            {
+                fprintf(output,"%d\t\t%d\t\tKeyword %s\n",l,t,str);
+                t++;
+            }
+            else{
+                fprintf(output,"%d\t\t%d\t\tIdentifier %s\n",l,t,str);
+                t++;
 
+            }
+        }
+        else if(ch == '\n'){
+            l++;
+        }
+    }
+}
